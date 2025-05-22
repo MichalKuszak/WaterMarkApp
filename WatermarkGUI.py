@@ -3,6 +3,13 @@ from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 
+
+def validate_spinbox(string, new_string):
+    if len(new_string) > 3:
+        return False
+    return string.isdecimal()
+
+
 class WatermarkGUI:
     def __init__(self):
         self.root = tk.Tk()
@@ -88,17 +95,14 @@ class WatermarkGUI:
 
         ## Spinbox
 
-        self.font_size_spinbox = ttk.Spinbox(self.root, from_=0, to=500, increment=10)
+        self.font_size_spinbox = ttk.Spinbox(self.root,
+                                             from_=0,
+                                             to=999,
+                                             increment=10,
+                                             validate="key",
+                                             validatecommand=(self.root.register(validate_spinbox), "%S", "%P"))
         self.font_size_spinbox.insert(0, "100")
-        self.font_size_spinbox['state'] = 'readonly'
         self.font_size_spinbox.grid(row=7, column=3, sticky='WE', pady=10)
-        # ## Entry
-        # self.font_size_entry = ttk.Entry(self.root,
-        #                                 font=18,
-        #                                 width=5,
-        #                                 validatecommand=self.entry_is_numeric,
-        #                                 validate='all')
-        # self.font_size_entry.grid(row=7, column=3, sticky='WE', pady=10)
 
     def font_selection_combo(self):
         ## Label
@@ -145,18 +149,6 @@ class WatermarkGUI:
     def output_browse_func(self):
             dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
             self.output_file_entry.insert(tk.END, dirname)
-
-    def entry_is_numeric(self):
-        font_size = self.font_size_entry.get()
-        if len(font_size) == 0:
-            self.status_label.configure(text="")
-            return True
-        elif font_size.isnumeric():
-            self.status_label.configure(text="")
-            return True
-        else:
-            self.status_label.configure(text='The font_size must be a number!')
-            return False
 
 
 if __name__ == '__main__':
