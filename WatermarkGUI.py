@@ -142,8 +142,6 @@ class WatermarkGUI:
         )
         self.input_file_entry.insert(tk.END, self.file_path)
         self.output_file_entry.insert(tk.END, self.get_file_dir())
-        print(f"input path: {self.file_path}")
-        print(f"output path: {self.get_file_dir()}")
 
     def get_file_dir(self):
         dir_str_list = self.input_file_entry.get().split('/')
