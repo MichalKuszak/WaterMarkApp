@@ -11,6 +11,9 @@ def add_watermark(image_path, output_path, watermark_text, font_style, font_size
     image = image.convert('RGBA')
     width, height = image.size
 
+    file_name = image_path.split('/')[-1].split('.')
+    output_file_name = f"{".".join(file_name[:-1])}_watermark.{file_name[-1]}"
+
     overlay = Image.new('RGBA', image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(overlay)
 
@@ -50,7 +53,7 @@ def add_watermark(image_path, output_path, watermark_text, font_style, font_size
               font=font)
     output_image = Image.alpha_composite(image, overlay)
 
-    output_image.save(output_path)
+    output_image.save(output_file_name, output_path)
 
 if __name__ == "__main__":
 
