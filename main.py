@@ -25,6 +25,13 @@ class GUI(tk.Tk):
 
         # Widgets
         self.main = Main(self)
+        self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
+
+    def toggle_dark_mode(self):
+        if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
+            self.style.theme_use('darkly')
+        else:
+            self.style.theme_use('morph')
 
 
 
@@ -247,7 +254,7 @@ class App(GUI):
         self.main.output.browse_button.config(command=self.browse_saving_dir)
         self.main.submit_button.config(command=self.save_file)
         self.main.preview_button.config(command=self.validate_and_preview)
-        self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
+
 
 # TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
 # TODO: Use os.path or pathlib for OS-independent path handling.
@@ -282,11 +289,6 @@ class App(GUI):
 # TODO: Prompt the user before overwriting or add a versioning system.
 
 # TODO: Create a separate Watermarker class (non-GUI) to handle image processing logic.
-    def toggle_dark_mode(self):
-        if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
-            self.style.theme_use('darkly')
-        else:
-            self.style.theme_use('morph')
 
     def add_watermark(self):
         LINE_ALPHA = 80
