@@ -4,17 +4,14 @@ import ttkbootstrap as ttk
 from ttkbootstrap import Style
 from PIL import Image, ImageDraw, ImageFont
 
+# TODO: Add Drag & Drop Support
+# TODO: Dark Mode Toggle
+
 
 def validate_spinbox(string, new_string):
     if len(new_string) > 3:
         return False
     return string.isdecimal()
-
-def check_if_not_empty(string):
-    if len(string) == 0:
-        return False
-    else:
-        return True
 
 
 class WatermarkGUI(tk.Tk):
@@ -23,14 +20,17 @@ class WatermarkGUI(tk.Tk):
         self.config(padx=20, pady=20)
         self.geometry(f"{size[0]}x{size[1]}")
         self.minsize(size[0], size[1])
-        self.style = Style(theme='darkly')
+        self.style = Style()
+        self.style.theme_use('darkly')
         self.title(title)
 
         # Widgets
         self.main = Main(self)
 
 
-        # self.mainloop()
+
+# TODO Add an image preview pane using a Canvas widget.
+# TODO: Add an image of Mark Zuckerberg drinking water
 
 class Main(ttk.Frame):
     def __init__(self, parent):
@@ -52,6 +52,7 @@ class Main(ttk.Frame):
 
         ## Title label
         self.title_label = ttk.Label(self.top_frame, text='Watermark your image', font=('Helvetica', 24))
+        self.darkmode_toggle = DarkModeToggle(self.top_frame)
 
         # Middle frame
         self.middle_frame = ttk.Frame(self)
@@ -94,6 +95,7 @@ class Main(ttk.Frame):
         # Top frame
         ## Title label
         self.title_label.pack()
+        self.darkmode_toggle.pack()
         self.top_frame.grid(row=0, column=0, sticky="EW")
 
         # Middle frame
@@ -126,6 +128,28 @@ class Main(ttk.Frame):
         self.submit_button.pack()
         self.bottom_frame.grid(row=2, column=0, sticky="NEW")
 
+class DarkModeToggle(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.toggle_create_widgets()
+        self.toggle_layout_widgets()
+
+    def toggle_create_widgets(self):
+        self.darkmode_label = ttk.Label(self, text='Dark Mode:', font=('Helvetica', 18), justify='left')
+        self.darkmode_spinbox_val = tk.StringVar()
+        self.darkmode_spinbox_val.set("ON")
+        self.darkmode_spinbox = ttk.Spinbox(self,
+                                             values=["ON", "OFF"],
+                                             textvariable=self.darkmode_spinbox_val,
+                                             state='readonly',
+                                             width=15,
+                                            wrap=True)
+
+    def toggle_layout_widgets(self):
+        self.darkmode_label.pack(side='left', expand=True, fill='x')
+        self.darkmode_spinbox.pack(side='left')
+
+# TODO Create a shared base class or factory function.
 
 class Input(ttk.Frame):
     def __init__(self, parent):
@@ -177,6 +201,8 @@ class TextEntry(ttk.Frame):
         self.watermark_text_label.pack(pady=10)
         self.watermark_text_entry.pack(side='left', expand=True, fill='x')
 
+# TODO: Include fallback fonts, or dynamically load from a bundled fonts directory.
+
 class FontCombo(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -212,7 +238,7 @@ class FontSpin(ttk.Frame):
     def font_size_create_widgets(self):
         self.font_size_label = ttk.Label(self, text='Size: ', font=('Helvetica', 18), justify='left')
         self.spinbox_val = tk.IntVar()
-        self.spinbox_val.set("100")
+        self.spinbox_val.set(100)
         self.font_size_spinbox = ttk.Spinbox(self,
                                              textvariable=self.spinbox_val,
                                              from_=0,
@@ -229,12 +255,14 @@ class FontSpin(ttk.Frame):
 class App(WatermarkGUI):
     def __init__(self, title, size):
         super().__init__(title=title, size=size)
-        self.main.input.input_file_button.config(command=self.input_browse_func)
-        self.main.output.output_file_button.config(command=self.output_browse_func)
+        self.main.input.input_file_button.config(command=self.browse_input_file)
+        self.main.output.output_file_button.config(command=self.browse_saving_dir)
         self.main.submit_button.config(command=self.validate_and_submit)
-        self.mainloop()
 
-    def input_browse_func(self):
+# TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
+# TODO: Use os.path or pathlib for OS-independent path handling.
+
+    def browse_input_file(self):
         self.file_path = tk.filedialog.askopenfilename(filetypes=(
             ("JPEG files",".jpeg .jpg"),
             ("PNG files", ".png"),
@@ -249,7 +277,7 @@ class App(WatermarkGUI):
         dir_str_list = self.main.input.input_file_entry.get().split('/')
         return f'{"/".join(dir_str_list[:-1])}/'
 
-    def output_browse_func(self):
+    def browse_saving_dir(self):
         dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
         self.main.output.output_file_entry.insert(tk.END, dirname)
 
@@ -261,21 +289,24 @@ class App(WatermarkGUI):
         file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
         full_output_path = f'{output_path}{file_name_new}'
         return full_output_path
+# TODO: Prompt the user before overwriting or add a versioning system.
+
+# TODO: Create a separate Watermarker class (non-GUI) to handle image processing logic.
 
     def add_watermark(self):
+        LINE_ALPHA = 80
+        LINE_SPACING = 50
+
         image = Image.open(self.main.input.input_file_entry.get(), mode='r')
         image = image.convert('RGBA')
         width, height = image.size
-
-        # file_name = image_path.split('/')[-1].split('.')
-        # output_file_name = f"{".".join(file_name[:-1])}_watermark.{file_name[-1]}"
 
         overlay = Image.new('RGBA', image.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(overlay)
 
         watermark_lines_color = (255, 255, 255, 30)
 
-        for i in range(0, width + height, 50):
+        for i in range(0, width + height, LINE_SPACING):
             draw.line(((0, height - i), (i, height)),
                       fill=watermark_lines_color,
                       width=5)
@@ -291,8 +322,8 @@ class App(WatermarkGUI):
                      'Bodoni': 'Bodoni 72.ttc',
                      'Rockwell': 'Rockwell.ttc'
                      }
-        watermark_font = font_dict[self.main.font_style.combo_value.get()]  # placeholder to input
-        # font_size = 100 # placeholder to input
+        watermark_font = font_dict[self.main.font_style.combo_value.get()]  
+
         font_size = self.main.font_size.spinbox_val.get()
         watermark_text = self.main.watermark_text.watermark_text_entry.get()
         font = ImageFont.truetype(watermark_font, font_size)
@@ -302,7 +333,7 @@ class App(WatermarkGUI):
         x = (width - text_width) // 2
         y = (height - text_height) // 2
 
-        watermark_text_color = (255, 255, 255, 80)
+        watermark_text_color = (255, 255, 255, LINE_ALPHA)
 
         draw.text((x, y),
                   watermark_text,
@@ -312,6 +343,12 @@ class App(WatermarkGUI):
 
         output_image.save(self.get_full_output_path())
         output_image.show()
+
+    def toggle_dark_mode(self):
+        if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
+            self.style.theme_use('darkly')
+        else:
+            self.style.theme_use('morph')
 
     def validate_and_submit(self):
         input_path = self.main.input.input_file_entry.get().strip()
@@ -330,3 +367,4 @@ class App(WatermarkGUI):
 
 if __name__ == '__main__':
     gui = App('Watermark Tool', (600,800))
+    gui.mainloop()
