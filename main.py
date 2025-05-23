@@ -5,7 +5,6 @@ from ttkbootstrap import Style
 from PIL import Image, ImageDraw, ImageFont
 
 # TODO: Add Drag & Drop Support
-# TODO: Dark Mode Toggle
 
 
 def validate_spinbox(string, new_string):
@@ -14,7 +13,7 @@ def validate_spinbox(string, new_string):
     return string.isdecimal()
 
 
-class WatermarkGUI(tk.Tk):
+class GUI(tk.Tk):
     def __init__(self, title, size):
         super().__init__()
         self.config(padx=20, pady=20)
@@ -30,6 +29,7 @@ class WatermarkGUI(tk.Tk):
 
 
 # TODO Add an image preview pane using a Canvas widget.
+
 # TODO: Add an image of Mark Zuckerberg drinking water
 
 class Main(ttk.Frame):
@@ -65,14 +65,14 @@ class Main(ttk.Frame):
             text='Select image to overlay:', 
             font=('Helvetica', 18), 
             justify='left')
-        self.input = Input(self.frame_2)
+        self.input = PathEntry(self.frame_2)
 
         ## File output widgets
         self.output_label = ttk.Label(self.frame_2,
                                       text='Select path to save the image:',
                                       font=('Helvetica', 18),
                                       justify='left')
-        self.output = Output(self.frame_2)
+        self.output = PathEntry(self.frame_2)
 
         ## Widgets for watermark text
         self.watermark_text = TextEntry(self.frame_2)
@@ -91,7 +91,8 @@ class Main(ttk.Frame):
         self.status_label = ttk.Label(self.frame_3, justify='center', font=("Helvetica", 16, "bold"),
                                       foreground="red")
         ## Submit button
-        self.submit_button = ttk.Button(self.frame_3, text='Submit', width=20)
+        self.submit_button = ttk.Button(self.frame_3, text='Submit', width=20, style='success')
+        self.preview_button = ttk.Button(self.frame_3, text='Preview', width=20, bootstyle='info-outline')
 
     def layout_widgets(self):
 
@@ -129,7 +130,8 @@ class Main(ttk.Frame):
         self.status_label.pack(pady=10)
 
         ## Submit button
-        self.submit_button.pack()
+        self.submit_button.pack(pady=10)
+        self.preview_button.pack()
         self.frame_3.grid(row=3, column=0, sticky="NEW")
 
 class DarkModeToggle(ttk.Frame):
@@ -153,38 +155,20 @@ class DarkModeToggle(ttk.Frame):
         self.darkmode_label.pack(side='left', expand=True, fill='x')
         self.darkmode_spinbox.pack(side='left')
 
-# TODO Create a shared base class or factory function.
 
-class Input(ttk.Frame):
+class PathEntry(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.input_create_widgets()
-        self.input_layout_widgets()
+        self.entry_create_widgets()
+        self.entry_layout_widgets()
 
-    def input_create_widgets(self):
-        self.input_file_entry = ttk.Entry(self, font=20)
-        self.input_file_button = ttk.Button(self, text="Browse")
+    def entry_create_widgets(self):
+        self.path_entry = ttk.Entry(self, font=20)
+        self.browse_button = ttk.Button(self, text="Browse")
 
-    def input_layout_widgets(self):
-        self.input_file_entry.pack(side='left', expand=True, fill='x')
-        self.input_file_button.pack(side='left')
-
-
-
-class Output(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.output_create_widgets()
-        self.output_layout_widgets()
-
-    def output_create_widgets(self):
-        self.output_file_entry = ttk.Entry(self, font=20)
-        self.output_file_button = ttk.Button(self, text="Browse")
-
-    def output_layout_widgets(self):
-        self.output_file_entry.pack(side='left', expand=True, fill='x')
-        self.output_file_button.pack(side='left')
-
+    def entry_layout_widgets(self):
+        self.path_entry.pack(side='left', expand=True, fill='x')
+        self.browse_button.pack(side='left')
 
 
 class TextEntry(ttk.Frame):
@@ -256,12 +240,13 @@ class FontSpin(ttk.Frame):
         self.font_size_label.pack(pady=10)
         self.font_size_spinbox.pack(side='left', expand=True, fill='x')
 
-class App(WatermarkGUI):
+class App(GUI):
     def __init__(self, title, size):
         super().__init__(title=title, size=size)
-        self.main.input.input_file_button.config(command=self.browse_input_file)
-        self.main.output.output_file_button.config(command=self.browse_saving_dir)
-        self.main.submit_button.config(command=self.validate_and_submit)
+        self.main.input.browse_button.config(command=self.browse_input_file)
+        self.main.output.browse_button.config(command=self.browse_saving_dir)
+        self.main.submit_button.config(command=self.save_file)
+        self.main.preview_button.config(command=self.validate_and_preview)
         self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
 
 # TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
@@ -275,20 +260,20 @@ class App(WatermarkGUI):
             ("All files","*.*")
             )
         )
-        self.main.input.input_file_entry.insert(tk.END, self.file_path)
-        self.main.output.output_file_entry.insert(tk.END, self.get_file_dir())
+        self.main.input.path_entry.insert(tk.END, self.file_path)
+        self.main.output.path_entry.insert(tk.END, self.get_file_dir())
 
     def get_file_dir(self):
-        dir_str_list = self.main.input.input_file_entry.get().split('/')
+        dir_str_list = self.main.input.path_entry.get().split('/')
         return f'{"/".join(dir_str_list[:-1])}/'
 
     def browse_saving_dir(self):
         dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
-        self.main.output.output_file_entry.insert(tk.END, dirname)
+        self.main.output.path_entry.insert(tk.END, dirname)
 
     def get_full_output_path(self):
-        input_path = self.main.input.input_file_entry.get()
-        output_path = self.main.output.output_file_entry.get()
+        input_path = self.main.input.path_entry.get()
+        output_path = self.main.output.path_entry.get()
         file_name = input_path.split('/')[-1]
         file_name_elements = file_name.split(".")
         file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
@@ -297,12 +282,17 @@ class App(WatermarkGUI):
 # TODO: Prompt the user before overwriting or add a versioning system.
 
 # TODO: Create a separate Watermarker class (non-GUI) to handle image processing logic.
+    def toggle_dark_mode(self):
+        if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
+            self.style.theme_use('darkly')
+        else:
+            self.style.theme_use('morph')
 
     def add_watermark(self):
         LINE_ALPHA = 80
         LINE_SPACING = 50
 
-        image = Image.open(self.main.input.input_file_entry.get(), mode='r')
+        image = Image.open(self.main.input.path_entry.get(), mode='r')
         image = image.convert('RGBA')
         width, height = image.size
 
@@ -327,7 +317,7 @@ class App(WatermarkGUI):
                      'Bodoni': 'Bodoni 72.ttc',
                      'Rockwell': 'Rockwell.ttc'
                      }
-        watermark_font = font_dict[self.main.font_style.combo_value.get()]  
+        watermark_font = font_dict[self.main.font_style.combo_value.get()]
 
         font_size = self.main.font_size.spinbox_val.get()
         watermark_text = self.main.watermark_text.watermark_text_entry.get()
@@ -344,20 +334,11 @@ class App(WatermarkGUI):
                   watermark_text,
                   fill=watermark_text_color,
                   font=font)
-        output_image = Image.alpha_composite(image, overlay)
+        self.output_image = Image.alpha_composite(image, overlay)
 
-        output_image.save(self.get_full_output_path())
-        output_image.show()
-
-    def toggle_dark_mode(self):
-        if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
-            self.style.theme_use('darkly')
-        else:
-            self.style.theme_use('morph')
-
-    def validate_and_submit(self):
-        input_path = self.main.input.input_file_entry.get().strip()
-        output_path = self.main.output.output_file_entry.get().strip()
+    def validate_and_preview(self):
+        input_path = self.main.input.path_entry.get().strip()
+        output_path = self.main.output.path_entry.get().strip()
 
         if len(input_path) == 0 and len(output_path) == 0:
             self.main.status_label.configure(text="Please select the image file and saving directory!")
@@ -368,6 +349,13 @@ class App(WatermarkGUI):
         else:
             self.main.status_label.configure(text="")
             self.add_watermark()
+            self.output_image.show()
+
+
+    def save_file(self):
+        self.validate_and_preview()
+        self.output_image.save(self.get_full_output_path())
+
 
 
 if __name__ == '__main__':
