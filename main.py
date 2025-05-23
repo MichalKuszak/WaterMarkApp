@@ -247,48 +247,9 @@ class FontSpin(ttk.Frame):
         self.font_size_label.pack(pady=10)
         self.font_size_spinbox.pack(side='left', expand=True, fill='x')
 
-class App(GUI):
+class Watermarker(GUI):
     def __init__(self, title, size):
         super().__init__(title=title, size=size)
-        self.main.input.browse_button.config(command=self.browse_input_file)
-        self.main.output.browse_button.config(command=self.browse_saving_dir)
-        self.main.submit_button.config(command=self.save_file)
-        self.main.preview_button.config(command=self.validate_and_preview)
-
-
-# TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
-# TODO: Use os.path or pathlib for OS-independent path handling.
-
-    def browse_input_file(self):
-        self.file_path = tk.filedialog.askopenfilename(filetypes=(
-            ("JPEG files",".jpeg .jpg"),
-            ("PNG files", ".png"),
-            ("BMP files", ".bmp"),
-            ("All files","*.*")
-            )
-        )
-        self.main.input.path_entry.insert(tk.END, self.file_path)
-        self.main.output.path_entry.insert(tk.END, self.get_file_dir())
-
-    def get_file_dir(self):
-        dir_str_list = self.main.input.path_entry.get().split('/')
-        return f'{"/".join(dir_str_list[:-1])}/'
-
-    def browse_saving_dir(self):
-        dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
-        self.main.output.path_entry.insert(tk.END, dirname)
-
-    def get_full_output_path(self):
-        input_path = self.main.input.path_entry.get()
-        output_path = self.main.output.path_entry.get()
-        file_name = input_path.split('/')[-1]
-        file_name_elements = file_name.split(".")
-        file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
-        full_output_path = f'{output_path}{file_name_new}'
-        return full_output_path
-# TODO: Prompt the user before overwriting or add a versioning system.
-
-# TODO: Create a separate Watermarker class (non-GUI) to handle image processing logic.
 
     def add_watermark(self):
         LINE_ALPHA = 80
@@ -354,9 +315,55 @@ class App(GUI):
             self.output_image.show()
 
 
+
+class App(Watermarker):
+    def __init__(self, title, size):
+        super().__init__(title=title, size=size)
+        self.main.input.browse_button.config(command=self.browse_input_file)
+        self.main.output.browse_button.config(command=self.browse_saving_dir)
+        self.main.submit_button.config(command=self.save_file)
+        self.main.preview_button.config(command=self.validate_and_preview)
+
+
+# TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
+# TODO: Use os.path or pathlib for OS-independent path handling.
+
+    def browse_input_file(self):
+        self.file_path = tk.filedialog.askopenfilename(filetypes=(
+            ("JPEG files",".jpeg .jpg"),
+            ("PNG files", ".png"),
+            ("BMP files", ".bmp"),
+            ("All files","*.*")
+            )
+        )
+        self.main.input.path_entry.insert(tk.END, self.file_path)
+        self.main.output.path_entry.insert(tk.END, self.get_file_dir())
+
+    def get_file_dir(self):
+        dir_str_list = self.main.input.path_entry.get().split('/')
+        return f'{"/".join(dir_str_list[:-1])}/'
+
+    def browse_saving_dir(self):
+        dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
+        self.main.output.path_entry.insert(tk.END, dirname)
+
+    def get_full_output_path(self):
+        input_path = self.main.input.path_entry.get()
+        output_path = self.main.output.path_entry.get()
+        file_name = input_path.split('/')[-1]
+        file_name_elements = file_name.split(".")
+        file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
+        full_output_path = f'{output_path}{file_name_new}'
+        return full_output_path
+
+
     def save_file(self):
         self.validate_and_preview()
         self.output_image.save(self.get_full_output_path())
+
+# TODO: Prompt the user before overwriting or add a versioning system.
+
+
 
 
 
