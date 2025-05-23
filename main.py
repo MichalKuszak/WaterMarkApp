@@ -30,15 +30,18 @@ class WatermarkGUI(tk.Tk):
         self.main = Main(self)
 
 
-        self.mainloop()
+        # self.mainloop()
 
 class Main(ttk.Frame):
     def __init__(self, parent):
         super().__init__()
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+
         self.create_widgets()
         self.layout_widgets()
-
-
         self.pack(fill='both', expand=True)
 
 
@@ -58,34 +61,132 @@ class Main(ttk.Frame):
             text='Select image to overlay:', 
             font=('Helvetica', 18), 
             justify='left')
-        self.m1_frame = ttk.Frame(self.middle_frame)
-        self.input_file_entry = ttk.Entry(self.m1_frame, font=20)
-        self.input_file_button = ttk.Button(self.m1_frame, text="Browse", command=self.input_browse_func)
+        self.input = Input(self.middle_frame)
 
         ## File output widgets
         self.output_label = ttk.Label(self.middle_frame,
                                       text='Select path to save the image:',
                                       font=('Helvetica', 18),
                                       justify='left')
-        self.m2_frame = ttk.Frame(self.middle_frame)
-        self.output_file_entry = ttk.Entry(self.m2_frame, font=20)
-        self.output_file_button = ttk.Button(self.m2_frame, text="Browse", command=self.output_browse_func)
+        self.output = Output(self.middle_frame)
 
         ## Widgets for watermark text
-        self.watermark_text_label = ttk.Label(self.middle_frame,
-                                              text='Text to overlay:',
-                                              font=('Helvetica', 18),
-                                              justify='left')
-        self.m3_frame = ttk.Frame(self.middle_frame)
-        self.watermark_text_entry = ttk.Entry(self.m3_frame, font=('Helvetica', 18))
-        self.watermark_text_entry.insert(tk.END, 'Watermark')
+        self.watermark_text = TextEntry(self.middle_frame)
 
         ## Font formatting widgets
         ### Font style combobox
-        self.m4_frame = ttk.Frame(self.middle_frame)
-        self.font_style_label = ttk.Label(self.m4_frame, text='Font: ', font=('Helvetica', 18), justify='left')
+        self.font_style = FontCombo(self.middle_frame)
+
+        ### Font size spinbox
+        self.font_size = FontSpin(self.middle_frame)
+
+        # Bottom frame
+        self.bottom_frame = ttk.Frame(self)
+
+        ## Status info
+        self.status_label = ttk.Label(self.bottom_frame, justify='center', font=("Helvetica", 16, "bold"),
+                                      foreground="red")
+        ## Submit button
+        self.submit_button = ttk.Button(self.bottom_frame, text='Submit', width=20)
+
+    def layout_widgets(self):
+
+        # Top frame
+        ## Title label
+        self.title_label.pack()
+        self.top_frame.grid(row=0, column=0, sticky="EW")
+
+        # Middle frame
+        ## File input widgets
+        self.input_label.pack(pady=10)
+        self.input.pack(fill='x', expand=True)
+
+        ## File output widgets
+        self.output_label.pack(pady=10)
+        self.output.pack(expand=True, fill='x')
+
+        ## Widgets for watermark text
+        self.watermark_text.pack(expand=True, fill='x')
+
+        ## Font formatting widgets
+        ### Font style combobox
+        self.font_style.pack(side='left', expand=True, fill='x', padx=10, pady=10)
+
+        ### Font size spinbox
+        self.font_size.pack(side='left', expand=True, fill='x')
+        # self.middle_frame.pack(expand=True, fill='x', padx=10)
+        self.middle_frame.grid(row=1, column=0, sticky="NEWS")
+
+
+        # Bottom frame
+        ## Status info
+        self.status_label.pack(pady=10)
+
+        ## Submit button
+        self.submit_button.pack()
+        self.bottom_frame.grid(row=2, column=0, sticky="NEW")
+
+
+class Input(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.input_create_widgets()
+        self.input_layout_widgets()
+
+    def input_create_widgets(self):
+        self.input_file_entry = ttk.Entry(self, font=20)
+        self.input_file_button = ttk.Button(self, text="Browse")
+
+    def input_layout_widgets(self):
+        self.input_file_entry.pack(side='left', expand=True, fill='x')
+        self.input_file_button.pack(side='left')
+
+
+
+class Output(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.output_create_widgets()
+        self.output_layout_widgets()
+
+    def output_create_widgets(self):
+        self.output_file_entry = ttk.Entry(self, font=20)
+        self.output_file_button = ttk.Button(self, text="Browse")
+
+    def output_layout_widgets(self):
+        self.output_file_entry.pack(side='left', expand=True, fill='x')
+        self.output_file_button.pack(side='left')
+
+
+
+class TextEntry(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.entry_create_widgets()
+        self.entry_layout_widgets()
+
+    def entry_create_widgets(self):
+        self.watermark_text_label = ttk.Label(self,
+                                              text='Text to overlay:',
+                                              font=('Helvetica', 18),
+                                              justify='left')
+        self.watermark_text_entry = ttk.Entry(self, font=('Helvetica', 18))
+        self.watermark_text_entry.insert(tk.END, 'Watermark')
+
+    def entry_layout_widgets(self):
+        self.watermark_text_label.pack(pady=10)
+        self.watermark_text_entry.pack(side='left', expand=True, fill='x')
+
+class FontCombo(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.font_style_create_widgets()
+        self.font_style_layout_widgets()
+
+    def font_style_create_widgets(self):
+        self.font_style_label = ttk.Label(self, text='Font: ', font=('Helvetica', 18), justify='left')
         self.combo_value = tk.StringVar()
-        self.font_combo = ttk.Combobox(self.m4_frame, textvariable=self.combo_value, state='readonly', width=15)
+        self.font_combo = ttk.Combobox(self, textvariable=self.combo_value, state='readonly', width=15)
         self.font_combo['values'] = ('Helvetica',
                                           'Times New Roman',
                                           'Georgia',
@@ -98,12 +199,21 @@ class Main(ttk.Frame):
                                           'Rockwell')
         self.font_combo.current(0)
 
-        ### Font size spinbox
-        self.m5_frame = ttk.Frame(self.middle_frame)
-        self.font_size_label = ttk.Label(self.m5_frame, text='Size: ', font=('Helvetica', 18), justify='left')
+    def font_style_layout_widgets(self):
+        self.font_style_label.pack(pady=10)
+        self.font_combo.pack(side='left', expand=True, fill='x')
+
+class FontSpin(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.font_size_create_widgets()
+        self.font_size_layout_widgets()
+
+    def font_size_create_widgets(self):
+        self.font_size_label = ttk.Label(self, text='Size: ', font=('Helvetica', 18), justify='left')
         self.spinbox_val = tk.IntVar()
         self.spinbox_val.set("100")
-        self.font_size_spinbox = ttk.Spinbox(self.m5_frame,
+        self.font_size_spinbox = ttk.Spinbox(self,
                                              textvariable=self.spinbox_val,
                                              from_=0,
                                              to=999,
@@ -112,61 +222,18 @@ class Main(ttk.Frame):
                                              validatecommand=(self.register(validate_spinbox), "%S", "%P"),
                                              width=15)
 
-        # Bottom frame
-        self.bottom_frame = ttk.Frame(self)
-
-        ## Status info
-        self.status_label = ttk.Label(self.bottom_frame, text="", justify='center')
-
-        ## Submit button
-        self.submit_button = ttk.Button(self.bottom_frame, text='Submit', width=20, command=self.add_watermark)
-
-    def layout_widgets(self):
-
-        # Top frame
-        ## Title label
-        self.title_label.pack(padx=30, pady=(0, 30))
-        self.top_frame.pack()
-
-        # Middle frame
-        ## File input widgets
-        self.input_label.pack(pady=10)
-        self.input_file_entry.pack(side='left', expand=True, fill='x')
-        self.input_file_button.pack(side='left')
-        self.m1_frame.pack(expand=True, fill='x')
-
-        ## File output widgets
-        self.output_label.pack(pady=10)
-        self.output_file_entry.pack(side='left', expand=True, fill='x')
-        self.output_file_button.pack(side='left')
-        self.m2_frame.pack(expand=True, fill='x')
-
-        ## Widgets for watermark text
-        self.watermark_text_label.pack(pady=10)
-        self.watermark_text_entry.pack(side='left', expand=True, fill='x')
-        self.m3_frame.pack(expand=True, fill='x')
-
-        ## Font formatting widgets
-        ### Font style combobox
-        self.font_style_label.pack(pady=10)
-        self.font_combo.pack(side='left', expand=True, fill='x')
-        self.m4_frame.pack(side='left', expand=True, fill='x', padx=10, pady=10)
-
-        ### Font size spinbox
+    def font_size_layout_widgets(self):
         self.font_size_label.pack(pady=10)
         self.font_size_spinbox.pack(side='left', expand=True, fill='x')
-        self.m5_frame.pack(side='left', expand=True, fill='x')
-        self.middle_frame.pack(expand=True, fill='x', padx=10)
 
-        # Bottom frame
-        ## Status info
-        self.status_label.pack(expand=True, fill='x', padx=10, pady=10)
+class App(WatermarkGUI):
+    def __init__(self, title, size):
+        super().__init__(title=title, size=size)
+        self.main.input.input_file_button.config(command=self.input_browse_func)
+        self.main.output.output_file_button.config(command=self.output_browse_func)
+        self.main.submit_button.config(command=self.validate_and_submit)
+        self.mainloop()
 
-        ## Submit button
-        self.submit_button.pack()
-        self.bottom_frame.pack()
-
-    #--------------------------------------------------- FUNCTIONS ---------------------------------------------------#
     def input_browse_func(self):
         self.file_path = tk.filedialog.askopenfilename(filetypes=(
             ("JPEG files",".jpeg .jpg"),
@@ -175,20 +242,20 @@ class Main(ttk.Frame):
             ("All files","*.*")
             )
         )
-        self.input_file_entry.insert(tk.END, self.file_path)
-        self.output_file_entry.insert(tk.END, self.get_file_dir())
+        self.main.input.input_file_entry.insert(tk.END, self.file_path)
+        self.main.output.output_file_entry.insert(tk.END, self.get_file_dir())
 
     def get_file_dir(self):
-        dir_str_list = self.input_file_entry.get().split('/')
+        dir_str_list = self.main.input.input_file_entry.get().split('/')
         return f'{"/".join(dir_str_list[:-1])}/'
 
     def output_browse_func(self):
-            dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
-            self.output_file_entry.insert(tk.END, dirname)
+        dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
+        self.main.output.output_file_entry.insert(tk.END, dirname)
 
     def get_full_output_path(self):
-        input_path = self.input_file_entry.get()
-        output_path = self.output_file_entry.get()
+        input_path = self.main.input.input_file_entry.get()
+        output_path = self.main.output.output_file_entry.get()
         file_name = input_path.split('/')[-1]
         file_name_elements = file_name.split(".")
         file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
@@ -196,7 +263,7 @@ class Main(ttk.Frame):
         return full_output_path
 
     def add_watermark(self):
-        image = Image.open(self.input_file_entry.get(), mode='r')
+        image = Image.open(self.main.input.input_file_entry.get(), mode='r')
         image = image.convert('RGBA')
         width, height = image.size
 
@@ -224,10 +291,10 @@ class Main(ttk.Frame):
                      'Bodoni': 'Bodoni 72.ttc',
                      'Rockwell': 'Rockwell.ttc'
                      }
-        watermark_font = font_dict[self.combo_value.get()]  # placeholder to input
+        watermark_font = font_dict[self.main.font_style.combo_value.get()]  # placeholder to input
         # font_size = 100 # placeholder to input
-        font_size = self.spinbox_val.get()
-        watermark_text = self.watermark_text_entry.get()
+        font_size = self.main.font_size.spinbox_val.get()
+        watermark_text = self.main.watermark_text.watermark_text_entry.get()
         font = ImageFont.truetype(watermark_font, font_size)
         text_width = font.getmask(watermark_text).getbbox()[2]
         text_height = font.getmask(watermark_text).getbbox()[3]
@@ -246,8 +313,20 @@ class Main(ttk.Frame):
         output_image.save(self.get_full_output_path())
         output_image.show()
 
-class Input(ttk.Frame)
+    def validate_and_submit(self):
+        input_path = self.main.input.input_file_entry.get().strip()
+        output_path = self.main.output.output_file_entry.get().strip()
+
+        if len(input_path) == 0 and len(output_path) == 0:
+            self.main.status_label.configure(text="Please select the image file and saving directory!")
+        elif len(input_path) == 0:
+            self.main.status_label.configure(text="Please select the image file!")
+        elif len(output_path) == 0:
+            self.main.status_label.configure(text="Please select the saving directory!")
+        else:
+            self.main.status_label.configure(text="")
+            self.add_watermark()
+
 
 if __name__ == '__main__':
-    gui = WatermarkGUI('Watermark Tool', (600,800))
-
+    gui = App('Watermark Tool', (600,800))
