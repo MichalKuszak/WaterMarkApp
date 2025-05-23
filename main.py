@@ -39,6 +39,7 @@ class Main(ttk.Frame):
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight=1)
 
         self.create_widgets()
         self.layout_widgets()
@@ -47,56 +48,59 @@ class Main(ttk.Frame):
 
     # ---------------------------------------------------- WIDGETS ----------------------------------------------------#
     def create_widgets(self):
+        self.frame_0 = ttk.Frame(self)
+        self.darkmode_toggle = DarkModeToggle(self.frame_0)
+
         # Top frame
-        self.top_frame = ttk.Frame(self)
+        self.frame_1 = ttk.Frame(self)
 
         ## Title label
-        self.title_label = ttk.Label(self.top_frame, text='Watermark your image', font=('Helvetica', 24))
-        self.darkmode_toggle = DarkModeToggle(self.top_frame)
+        self.title_label = ttk.Label(self.frame_1, text='Watermark your image', font=('Helvetica', 24))
 
         # Middle frame
-        self.middle_frame = ttk.Frame(self)
+        self.frame_2 = ttk.Frame(self)
         ## File input widgets
         self.input_label = ttk.Label(
-            self.middle_frame, 
+            self.frame_2,
             text='Select image to overlay:', 
             font=('Helvetica', 18), 
             justify='left')
-        self.input = Input(self.middle_frame)
+        self.input = Input(self.frame_2)
 
         ## File output widgets
-        self.output_label = ttk.Label(self.middle_frame,
+        self.output_label = ttk.Label(self.frame_2,
                                       text='Select path to save the image:',
                                       font=('Helvetica', 18),
                                       justify='left')
-        self.output = Output(self.middle_frame)
+        self.output = Output(self.frame_2)
 
         ## Widgets for watermark text
-        self.watermark_text = TextEntry(self.middle_frame)
+        self.watermark_text = TextEntry(self.frame_2)
 
         ## Font formatting widgets
         ### Font style combobox
-        self.font_style = FontCombo(self.middle_frame)
+        self.font_style = FontCombo(self.frame_2)
 
         ### Font size spinbox
-        self.font_size = FontSpin(self.middle_frame)
+        self.font_size = FontSpin(self.frame_2)
 
         # Bottom frame
-        self.bottom_frame = ttk.Frame(self)
+        self.frame_3 = ttk.Frame(self)
 
         ## Status info
-        self.status_label = ttk.Label(self.bottom_frame, justify='center', font=("Helvetica", 16, "bold"),
+        self.status_label = ttk.Label(self.frame_3, justify='center', font=("Helvetica", 16, "bold"),
                                       foreground="red")
         ## Submit button
-        self.submit_button = ttk.Button(self.bottom_frame, text='Submit', width=20)
+        self.submit_button = ttk.Button(self.frame_3, text='Submit', width=20)
 
     def layout_widgets(self):
 
+        self.darkmode_toggle.pack(side="left")
+        self.frame_0.grid(row=0, column=0, sticky="NE")
         # Top frame
         ## Title label
         self.title_label.pack()
-        self.darkmode_toggle.pack()
-        self.top_frame.grid(row=0, column=0, sticky="EW")
+        self.frame_1.grid(row=1, column=0, sticky="EW")
 
         # Middle frame
         ## File input widgets
@@ -117,7 +121,7 @@ class Main(ttk.Frame):
         ### Font size spinbox
         self.font_size.pack(side='left', expand=True, fill='x')
         # self.middle_frame.pack(expand=True, fill='x', padx=10)
-        self.middle_frame.grid(row=1, column=0, sticky="NEWS")
+        self.frame_2.grid(row=2, column=0, sticky="NEWS")
 
 
         # Bottom frame
@@ -126,7 +130,7 @@ class Main(ttk.Frame):
 
         ## Submit button
         self.submit_button.pack()
-        self.bottom_frame.grid(row=2, column=0, sticky="NEW")
+        self.frame_3.grid(row=3, column=0, sticky="NEW")
 
 class DarkModeToggle(ttk.Frame):
     def __init__(self, parent):
@@ -135,14 +139,14 @@ class DarkModeToggle(ttk.Frame):
         self.toggle_layout_widgets()
 
     def toggle_create_widgets(self):
-        self.darkmode_label = ttk.Label(self, text='Dark Mode:', font=('Helvetica', 18), justify='left')
+        self.darkmode_label = ttk.Label(self, text='Dark Mode:', font=('Helvetica', 14), justify='left')
         self.darkmode_spinbox_val = tk.StringVar()
         self.darkmode_spinbox_val.set("ON")
         self.darkmode_spinbox = ttk.Spinbox(self,
                                              values=["ON", "OFF"],
                                              textvariable=self.darkmode_spinbox_val,
                                              state='readonly',
-                                             width=15,
+                                            width=5,
                                             wrap=True)
 
     def toggle_layout_widgets(self):
@@ -258,6 +262,7 @@ class App(WatermarkGUI):
         self.main.input.input_file_button.config(command=self.browse_input_file)
         self.main.output.output_file_button.config(command=self.browse_saving_dir)
         self.main.submit_button.config(command=self.validate_and_submit)
+        self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
 
 # TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
 # TODO: Use os.path or pathlib for OS-independent path handling.
