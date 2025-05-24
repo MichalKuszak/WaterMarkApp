@@ -121,6 +121,12 @@ class ImageCanvas(ttk.Frame):
     def canvas_layout_widgets(self):
         self.canvas.pack(expand=True, fill="both")
 
+    def update_image(self, pil_image):
+        self.img = ImageTk.PhotoImage(pil_image.resize((400, 225)))
+        self.canvas.delete("all")
+        self.canvas.create_image(200, 150, image=self.img)
+        self.canvas.image = self.img
+
 class DarkModeToggle(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -235,7 +241,8 @@ class Watermarker(GUI):
         LINE_SPACING = 50
 
         try:
-            Image.open(self.main.input.path_entry.get(), mode='r').verify()
+            with Image.open(self.main.input.path_entry.get(), mode='r') as img:
+                img.verify()
         except (UnidentifiedImageError, FileNotFoundError):
             self.main.status_label.configure(text="The image file you selected is unsupported!")
             return
@@ -275,6 +282,7 @@ class Watermarker(GUI):
         try:
             font = ImageFont.truetype(watermark_font, font_size)
         except IOError:
+            self.main.status_label.configure(text="Font not found, using default font")
             font = ImageFont.load_default(font_size)
         text_width = font.getmask(watermark_text).getbbox()[2]
         text_height = font.getmask(watermark_text).getbbox()[3]
@@ -289,6 +297,7 @@ class Watermarker(GUI):
                   fill=watermark_text_color,
                   font=font)
         self.output_image = Image.alpha_composite(image, overlay)
+        self.main.canvas.update_image(self.output_image)
 
     def validate_and_preview(self):
         input_path = self.main.input.path_entry.get().strip()
@@ -303,7 +312,7 @@ class Watermarker(GUI):
         else:
             self.main.status_label.configure(text="")
             self.add_watermark()
-            self.output_image.show()
+
 
 
 
