@@ -1,4 +1,5 @@
 import tkinter as tk
+from email.policy import default
 from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
@@ -271,7 +272,10 @@ class Watermarker(GUI):
 
         font_size = self.main.font_size.spinbox_val.get()
         watermark_text = self.main.watermark_text.watermark_text_entry.get()
-        font = ImageFont.truetype(watermark_font, font_size)
+        try:
+            font = ImageFont.truetype(watermark_font, font_size)
+        except IOError:
+            font = ImageFont.load_default(font_size)
         text_width = font.getmask(watermark_text).getbbox()[2]
         text_height = font.getmask(watermark_text).getbbox()[3]
 
