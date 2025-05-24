@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
-from PIL import Image, ImageDraw, ImageFont, ImageTk
-
+from PIL import Image, ImageDraw, ImageFont, ImageTk, UnidentifiedImageError
+from pathlib import Path
 # TODO: Add Drag & Drop Support
 
 
@@ -47,7 +47,6 @@ class Main(ttk.Frame):
         self.layout_widgets()
 
         self.pack(fill='both', expand=True)
-
 
     # ---------------------------------------------------- WIDGETS ----------------------------------------------------#
     def create_widgets(self):
@@ -176,7 +175,6 @@ class TextEntry(ttk.Frame):
         self.watermark_text_label.pack(pady=10)
         self.watermark_text_entry.pack(side='left', expand=True, fill='x')
 
-# TODO: Include fallback fonts, or dynamically load from a bundled fonts directory.
 
 class FontCombo(ttk.Frame):
     def __init__(self, parent):
@@ -234,6 +232,15 @@ class Watermarker(GUI):
     def add_watermark(self):
         LINE_ALPHA = 80
         LINE_SPACING = 50
+
+        try:
+            Image.open(self.main.input.path_entry.get(), mode='r').verify()
+        except (UnidentifiedImageError, FileNotFoundError):
+            self.main.status_label.configure(text="The image file you selected is unsupported!")
+            return
+        except IsADirectoryError:
+            self.main.status_label.configure(text="You selected a directory, not an image file!")
+            return
 
         image = Image.open(self.main.input.path_entry.get(), mode='r')
         image = image.convert('RGBA')
@@ -305,43 +312,40 @@ class App(Watermarker):
         self.main.preview_button.config(command=self.validate_and_preview)
 
 
-# TODO: Catch exceptions during image open/save to handle file permission issues or unsupported formats.
-# TODO: Use os.path or pathlib for OS-independent path handling.
-
     def browse_input_file(self):
-        self.file_path = tk.filedialog.askopenfilename(filetypes=(
+        self.file_path = Path(tk.filedialog.askopenfilename(filetypes=(
             ("JPEG files",".jpeg .jpg"),
             ("PNG files", ".png"),
             ("BMP files", ".bmp"),
             ("All files","*.*")
-            )
-        )
-        self.main.input.path_entry.insert(tk.END, self.file_path)
-        self.main.output.path_entry.insert(tk.END, self.get_file_dir())
+            )))
+        self.input_path = self.file_path.absolute()
+        self.output_dir = self.file_path.parent
+        self.main.input.path_entry.delete(0, tk.END)
+        self.main.input.path_entry.insert(tk.END, f"{self.input_path}")
+        self.main.output.path_entry.delete(0, tk.END)
+        self.main.output.path_entry.insert(tk.END, f"{self.output_dir}")
 
-    def get_file_dir(self):
-        dir_str_list = self.main.input.path_entry.get().split('/')
-        return f'{"/".join(dir_str_list[:-1])}/'
 
     def browse_saving_dir(self):
-        dirname = tk.filedialog.askdirectory(initialdir=self.get_file_dir())
+        dirname = tk.filedialog.askdirectory(initialdir=self.output_dir)
+        self.output_dir = Path(dirname)
+        self.main.output.path_entry.delete(0, tk.END)
         self.main.output.path_entry.insert(tk.END, dirname)
 
-    def get_full_output_path(self):
-        input_path = self.main.input.path_entry.get()
-        output_path = self.main.output.path_entry.get()
-        file_name = input_path.split('/')[-1]
-        file_name_elements = file_name.split(".")
-        file_name_new = f'{".".join(file_name_elements[:-1])}_watermarked.png'
-        full_output_path = f'{output_path}{file_name_new}'
-        return full_output_path
+    def unique_path(self, directory, name_pattern):
+        counter = 0
+        while True:
+            counter += 1
+            path = directory / name_pattern.format(counter)
+            if not path.exists():
+                return path
 
 
     def save_file(self):
         self.validate_and_preview()
-        self.output_image.save(self.get_full_output_path())
-
-# TODO: Prompt the user before overwriting or add a versioning system.
+        template = f"{self.input_path.stem}"+"{:03d}_watermarked.png"
+        self.output_image.save(self.unique_path(self.output_dir, template))
 
 if __name__ == '__main__':
     gui = App('Watermark Tool', (600,800))
