@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageTk
 
 # TODO: Add Drag & Drop Support
 
@@ -34,11 +34,6 @@ class GUI(tk.Tk):
             self.style.theme_use('morph')
 
 
-
-# TODO Add an image preview pane using a Canvas widget.
-
-# TODO: Add an image of Mark Zuckerberg drinking water
-
 class Main(ttk.Frame):
     def __init__(self, parent):
         super().__init__()
@@ -50,96 +45,81 @@ class Main(ttk.Frame):
 
         self.create_widgets()
         self.layout_widgets()
+
         self.pack(fill='both', expand=True)
 
 
     # ---------------------------------------------------- WIDGETS ----------------------------------------------------#
     def create_widgets(self):
-        self.frame_0 = ttk.Frame(self)
-        self.darkmode_toggle = DarkModeToggle(self.frame_0)
 
-        # Top frame
+        # Frame #1
         self.frame_1 = ttk.Frame(self)
+        self.darkmode_toggle = DarkModeToggle(self.frame_1)
+        self.title_label = ttk.Label(self.frame_1, text='Watermark your image', font=('Helvetica', 20))
+        self.canvas = ImageCanvas(self.frame_1)
 
-        ## Title label
-        self.title_label = ttk.Label(self.frame_1, text='Watermark your image', font=('Helvetica', 24))
-
-        # Middle frame
+        # Frame #2
         self.frame_2 = ttk.Frame(self)
-        ## File input widgets
         self.input_label = ttk.Label(
             self.frame_2,
             text='Select image to overlay:', 
-            font=('Helvetica', 18), 
+            font=('Helvetica', 16), 
             justify='left')
         self.input = PathEntry(self.frame_2)
-
-        ## File output widgets
         self.output_label = ttk.Label(self.frame_2,
                                       text='Select path to save the image:',
-                                      font=('Helvetica', 18),
+                                      font=('Helvetica', 16),
                                       justify='left')
         self.output = PathEntry(self.frame_2)
-
-        ## Widgets for watermark text
         self.watermark_text = TextEntry(self.frame_2)
-
-        ## Font formatting widgets
-        ### Font style combobox
         self.font_style = FontCombo(self.frame_2)
 
-        ### Font size spinbox
         self.font_size = FontSpin(self.frame_2)
 
-        # Bottom frame
+        # Frame #3
         self.frame_3 = ttk.Frame(self)
-
-        ## Status info
         self.status_label = ttk.Label(self.frame_3, justify='center', font=("Helvetica", 16, "bold"),
                                       foreground="red")
-        ## Submit button
         self.submit_button = ttk.Button(self.frame_3, text='Submit', width=20, style='success')
         self.preview_button = ttk.Button(self.frame_3, text='Preview', width=20, bootstyle='info-outline')
 
     def layout_widgets(self):
+        # Frame #1
+        self.darkmode_toggle.pack(side="top", anchor="ne")
+        self.title_label.pack(pady=10)
+        self.canvas.pack()
+        self.frame_1.grid(row=1, column=0, sticky="NEWS")
 
-        self.darkmode_toggle.pack(side="left")
-        self.frame_0.grid(row=0, column=0, sticky="NE")
-        # Top frame
-        ## Title label
-        self.title_label.pack()
-        self.frame_1.grid(row=1, column=0, sticky="EW")
-
-        # Middle frame
-        ## File input widgets
+        # Frame #2
         self.input_label.pack(pady=10)
         self.input.pack(fill='x', expand=True)
-
-        ## File output widgets
         self.output_label.pack(pady=10)
         self.output.pack(expand=True, fill='x')
-
-        ## Widgets for watermark text
         self.watermark_text.pack(expand=True, fill='x')
-
-        ## Font formatting widgets
-        ### Font style combobox
         self.font_style.pack(side='left', expand=True, fill='x', padx=10, pady=10)
-
-        ### Font size spinbox
         self.font_size.pack(side='left', expand=True, fill='x')
-        # self.middle_frame.pack(expand=True, fill='x', padx=10)
         self.frame_2.grid(row=2, column=0, sticky="NEWS")
 
-
-        # Bottom frame
-        ## Status info
+        # Frame #3
         self.status_label.pack(pady=10)
-
-        ## Submit button
         self.submit_button.pack(pady=10)
         self.preview_button.pack()
         self.frame_3.grid(row=3, column=0, sticky="NEW")
+
+class ImageCanvas(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.canvas_create_widgets()
+        self.canvas_layout_widgets()
+
+    def canvas_create_widgets(self):
+        self.canvas = ttk.Canvas(self, width= 400, height=225, background="red", bd=0, highlightthickness=0, relief="ridge")
+        self.open_img = Image.open("./assets/mark.jpg").resize((400,225))
+        self.img = ImageTk.PhotoImage(self.open_img)
+        self.canvas.create_image(200,150, image=self.img)
+
+    def canvas_layout_widgets(self):
+        self.canvas.pack(expand=True, fill="both")
 
 class DarkModeToggle(ttk.Frame):
     def __init__(self, parent):
@@ -148,7 +128,7 @@ class DarkModeToggle(ttk.Frame):
         self.toggle_layout_widgets()
 
     def toggle_create_widgets(self):
-        self.darkmode_label = ttk.Label(self, text='Dark Mode:', font=('Helvetica', 14), justify='left')
+        self.darkmode_label = ttk.Label(self, text='Dark Mode:', font=('Helvetica', 12), justify='left')
         self.darkmode_spinbox_val = tk.StringVar()
         self.darkmode_spinbox_val.set("ON")
         self.darkmode_spinbox = ttk.Spinbox(self,
@@ -170,7 +150,7 @@ class PathEntry(ttk.Frame):
         self.entry_layout_widgets()
 
     def entry_create_widgets(self):
-        self.path_entry = ttk.Entry(self, font=20)
+        self.path_entry = ttk.Entry(self, font=16)
         self.browse_button = ttk.Button(self, text="Browse")
 
     def entry_layout_widgets(self):
@@ -187,9 +167,9 @@ class TextEntry(ttk.Frame):
     def entry_create_widgets(self):
         self.watermark_text_label = ttk.Label(self,
                                               text='Text to overlay:',
-                                              font=('Helvetica', 18),
+                                              font=('Helvetica', 16),
                                               justify='left')
-        self.watermark_text_entry = ttk.Entry(self, font=('Helvetica', 18))
+        self.watermark_text_entry = ttk.Entry(self, font=('Helvetica', 16))
         self.watermark_text_entry.insert(tk.END, 'Watermark')
 
     def entry_layout_widgets(self):
@@ -205,7 +185,7 @@ class FontCombo(ttk.Frame):
         self.font_style_layout_widgets()
 
     def font_style_create_widgets(self):
-        self.font_style_label = ttk.Label(self, text='Font: ', font=('Helvetica', 18), justify='left')
+        self.font_style_label = ttk.Label(self, text='Font: ', font=('Helvetica', 16), justify='left')
         self.combo_value = tk.StringVar()
         self.font_combo = ttk.Combobox(self, textvariable=self.combo_value, state='readonly', width=15)
         self.font_combo['values'] = ('Helvetica',
@@ -231,7 +211,7 @@ class FontSpin(ttk.Frame):
         self.font_size_layout_widgets()
 
     def font_size_create_widgets(self):
-        self.font_size_label = ttk.Label(self, text='Size: ', font=('Helvetica', 18), justify='left')
+        self.font_size_label = ttk.Label(self, text='Size: ', font=('Helvetica', 16), justify='left')
         self.spinbox_val = tk.IntVar()
         self.spinbox_val.set(100)
         self.font_size_spinbox = ttk.Spinbox(self,
@@ -362,10 +342,6 @@ class App(Watermarker):
         self.output_image.save(self.get_full_output_path())
 
 # TODO: Prompt the user before overwriting or add a versioning system.
-
-
-
-
 
 if __name__ == '__main__':
     gui = App('Watermark Tool', (600,800))

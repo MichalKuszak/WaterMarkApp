@@ -1,60 +1,23 @@
-from PIL import Image, ImageDraw, ImageFont
+import tkinter as tk
+from tkinter import filedialog
+import ttkbootstrap as ttk
+from ttkbootstrap import Style
+from PIL import Image, ImageDraw, ImageFont, ImageTk
+
+class Main(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.geometry("600x600")
+
+        self.frame_1 = ttk.Frame(self)
+        self.canvas = ImageCanvas(self.frame_1)
+
+        self.canvas.pack()
+        self.frame_1.pack()
 
 
 
-# image_path = './assets/image.jpg' # placeholder to input
-# output_path = './assets/image_marked.jpg' # placeholder to input
-# watermark_text = 'Watermark' # placeholder to input
 
-def add_watermark(image_path, output_path, watermark_text, font_style, font_size):
-    image = Image.open(image_path, mode='r')
-    image = image.convert('RGBA')
-    width, height = image.size
-
-    file_name = image_path.split('/')[-1].split('.')
-    output_file_name = f"{".".join(file_name[:-1])}_watermark.{file_name[-1]}"
-
-    overlay = Image.new('RGBA', image.size, (255, 255, 255, 0))
-    draw = ImageDraw.Draw(overlay)
-
-    watermark_lines_color = (255, 255, 255, 30)
-
-    for i in range(0, width + height, 50):
-        draw.line(((0, height -i), (i, height)),
-                  fill=watermark_lines_color,
-                  width=5)
-
-    font_dict = {'Helvetica': 'Helvetica.ttc',
-     'Times New Roman': 'Times New Roman.ttf',
-     'Georgia': 'Georgia.ttf',
-     'Comic Sans': 'Comic Sans MS.ttf',
-     'Verdana': 'Verdana.ttf',
-     'Arial': 'Arial.ttf',
-     'Baskerville': 'Baskerville.ttc',
-     'Futura': 'Futura.ttc',
-     'Bodoni': 'Bodoni 72.ttc',
-     'Rockwell': 'Rockwell.ttc'
-                 }
-    watermark_font = font_dict[font_style] # placeholder to input
-    # font_size = 100 # placeholder to input
-
-    font = ImageFont.truetype(watermark_font, font_size)
-    text_width = font.getmask(watermark_text).getbbox()[2]
-    text_height = font.getmask(watermark_text).getbbox()[3]
-
-    x = (width - text_width) // 2
-    y = (height - text_height) // 2
-
-    watermark_text_color = (255,255,255, 80)
-
-    draw.text((x, y),
-              watermark_text,
-              fill=watermark_text_color,
-              font=font)
-    output_image = Image.alpha_composite(image, overlay)
-
-    output_image.save(output_file_name, output_path)
-
-if __name__ == "__main__":
-
-    add_watermark(image_path=image_path, output_path= output_path, watermark_text=watermark_text)
+if __name__ == '__main__':
+    root = Main()
+    root.mainloop()
