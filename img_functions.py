@@ -2,22 +2,19 @@ import tkinter as tk
 from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
-from PIL import Image, ImageDraw, ImageFont, ImageTk
-
-class Main(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.geometry("600x600")
-
-        self.frame_1 = ttk.Frame(self)
-        self.canvas = ImageCanvas(self.frame_1)
-
-        self.canvas.pack()
-        self.frame_1.pack()
+from PIL import Image, ImageDraw, ImageFont, ImageTk, UnidentifiedImageError
+from pathlib import Path
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 
+root = TkinterDnD.Tk()  # notice - use this instead of tk.Tk()
 
+lb = tk.Listbox(root)
+lb.insert(1, "drag files to here")
 
-if __name__ == '__main__':
-    root = Main()
-    root.mainloop()
+# register the listbox as a drop target
+lb.drop_target_register(DND_FILES)
+lb.dnd_bind('<<Drop>>', lambda e: lb.insert(tk.END, e.data))
+
+lb.pack()
+root.mainloop()
