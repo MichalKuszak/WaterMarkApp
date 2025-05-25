@@ -157,7 +157,7 @@ class ImageCanvas(ttk.Frame):
 
     def canvas_create_widgets(self) -> None:
         self.canvas = ttk.Canvas(self, width= 400, height=225, background="red", bd=0, highlightthickness=0, relief="ridge")
-        self.open_img = Image.open("./assets/mark.jpg").resize((400,225))
+        self.open_img = Image.open("assets/mark.jpg").resize((400, 225))
         self.img = ImageTk.PhotoImage(self.open_img)
         self.canvas.create_image(200,150, image=self.img)
 
@@ -473,5 +473,5 @@ class App(Watermarker):
 
 
 if __name__ == '__main__':
-    gui = App('Watermark Tool', (600,800))
+    gui = App('WaterMarkApp', (600,800))
     gui.mainloop()

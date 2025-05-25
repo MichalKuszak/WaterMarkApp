@@ -4,8 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efdcf6a1-2b9e-4f9a-97b0-dc42818494a3" name="Changes" comment="Finalize DnD function">
-      <change beforePath="$PROJECT_DIR$/img_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/img_functions.py" afterDir="false" />
+    <list default="true" id="efdcf6a1-2b9e-4f9a-97b0-dc42818494a3" name="Changes" comment="Add docstrings and type annotations">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/assets/mark.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drink-water.icns" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Arial.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Baskerville.ttc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Bodoni 72.ttc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Comic Sans MS.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Futura.ttc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Georgia.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Helvetica.ttc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Rockwell.ttc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Times New Roman.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Verdana.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_functions.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,6 +43,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "MichalKuszak"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MichalKuszak/Image_Watermarking_Desktop_App.git",
+    "accountId": "b7e39603-44d3-4492-aecd-f695b69fcb84"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -37,18 +64,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.WatermarkGUI.executor&quot;: &quot;Run&quot;,
-    &quot;Python.img_functions.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;experimental-1&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.WatermarkGUI.executor": "Run",
+    "Python.img_functions.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.pyinstaller.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/michalkuszak/PycharmProjects/Day 85 Image Watermarking Desktop App/dist"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dist" />
+      <recent name="$PROJECT_DIR$/fonts" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/fonts" />
       <recent name="$PROJECT_DIR$/assets" />
     </key>
   </component>
@@ -204,7 +240,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748165329401</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Add docstrings and type annotations">
+      <option name="closed" value="true" />
+      <created>1748167563253</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1748167563253</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -236,7 +280,8 @@
     <MESSAGE value="Add live preview" />
     <MESSAGE value="Add DnD function (initial)" />
     <MESSAGE value="Finalize DnD function" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finalize DnD function" />
+    <MESSAGE value="Add docstrings and type annotations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add docstrings and type annotations" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
