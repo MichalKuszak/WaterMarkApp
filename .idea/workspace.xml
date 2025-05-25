@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efdcf6a1-2b9e-4f9a-97b0-dc42818494a3" name="Changes" comment="Initial commit">
+    <list default="true" id="efdcf6a1-2b9e-4f9a-97b0-dc42818494a3" name="Changes" comment="Add live preview">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WatermarkGUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/WatermarkGUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/img_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/img_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +22,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -40,7 +45,7 @@
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+    &quot;git-widget-placeholder&quot;: &quot;experimental-1&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -72,11 +77,169 @@
       <option name="project" value="LOCAL" />
       <updated>1747837689796</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Rewrite widgets to methods">
+      <option name="closed" value="true" />
+      <created>1747906797711</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747906797711</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add spinbox widget validation">
+      <option name="closed" value="true" />
+      <created>1747908040292</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747908040292</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add main function">
+      <option name="closed" value="true" />
+      <created>1747927808334</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747927808334</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Split code into classes">
+      <option name="closed" value="true" />
+      <created>1747945490301</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747945490301</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add functionality and validation">
+      <option name="closed" value="true" />
+      <created>1748010173615</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1748010173615</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add darkmode toggle">
+      <option name="closed" value="true" />
+      <created>1748028721470</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1748028721470</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Finalise darkmode switching">
+      <option name="closed" value="true" />
+      <created>1748030062580</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1748030062580</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Add common PathEntry class for file input and output widgets">
+      <option name="closed" value="true" />
+      <created>1748032082898</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1748032082898</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Move toggle_dark_mode to GUI class">
+      <option name="closed" value="true" />
+      <created>1748032228053</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1748032228053</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Create Watermarker class to handle image processing logic">
+      <option name="closed" value="true" />
+      <created>1748032566122</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1748032566122</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Add image">
+      <option name="closed" value="true" />
+      <created>1748111884999</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1748111884999</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Add exception handling for unsupported/missing files">
+      <option name="closed" value="true" />
+      <created>1748116800506</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1748116800506</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Add default font style loading if selected font is not installed">
+      <option name="closed" value="true" />
+      <created>1748117171476</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1748117171476</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Add live preview">
+      <option name="closed" value="true" />
+      <created>1748118050095</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1748118050095</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
+    <MESSAGE value="Rewrite widgets to methods" />
+    <MESSAGE value="Add spinbox widget validation" />
+    <MESSAGE value="Add main function" />
+    <MESSAGE value="Split code into classes" />
+    <MESSAGE value="Add functionality and validation" />
+    <MESSAGE value="Add darkmode toggle" />
+    <MESSAGE value="Finalise darkmode switching" />
+    <MESSAGE value="Add common PathEntry class for file input and output widgets" />
+    <MESSAGE value="Move toggle_dark_mode to GUI class" />
+    <MESSAGE value="Create Watermarker class to handle image processing logic" />
+    <MESSAGE value="Add image" />
+    <MESSAGE value="Add exception handling for unsupported/missing files" />
+    <MESSAGE value="Add default font style loading if selected font is not installed" />
+    <MESSAGE value="Add live preview" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add live preview" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/WatermarkGUI.py</url>
+          <line>62</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/WatermarkGUI.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/WatermarkGUI.py</url>
+          <line>89</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,10 +1,11 @@
 import tkinter as tk
-from email.policy import default
 from tkinter import filedialog
 import ttkbootstrap as ttk
 from ttkbootstrap import Style
 from PIL import Image, ImageDraw, ImageFont, ImageTk, UnidentifiedImageError
 from pathlib import Path
+from tkinterdnd2 import DND_FILES, TkinterDnD
+
 # TODO: Add Drag & Drop Support
 
 
@@ -14,7 +15,7 @@ def validate_spinbox(string, new_string):
     return string.isdecimal()
 
 
-class GUI(tk.Tk):
+class GUI(TkinterDnD.Tk):
     def __init__(self, title, size):
         super().__init__()
         self.config(padx=20, pady=20)
@@ -27,6 +28,7 @@ class GUI(tk.Tk):
         # Widgets
         self.main = Main(self)
         self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
+
 
     def toggle_dark_mode(self):
         if self.main.darkmode_toggle.darkmode_spinbox_val.get() == "ON":
@@ -46,6 +48,7 @@ class Main(ttk.Frame):
 
         self.create_widgets()
         self.layout_widgets()
+
 
         self.pack(fill='both', expand=True)
 
@@ -157,11 +160,27 @@ class PathEntry(ttk.Frame):
 
     def entry_create_widgets(self):
         self.path_entry = ttk.Entry(self, font=16)
+        self.path_entry.drop_target_register(DND_FILES)
+        self.path_entry.dnd_bind('<<Drop>>', lambda e: self.path_entry.insert(tk.END, e.data))
         self.browse_button = ttk.Button(self, text="Browse")
 
     def entry_layout_widgets(self):
         self.path_entry.pack(side='left', expand=True, fill='x')
+        # self.path_entry.drop_target_register(DND_FILES)
+        # self.path_entry.dnd_bind("<<Drop>>", self.drop_inside_entry)
         self.browse_button.pack(side='left')
+
+    def drop_inside_entry(self, event):
+        dropped_file = Path(event.data.strip().strip('{}'))
+
+        self.path_entry.delete(0, tk.END)
+        self.path_entry.insert(0, f"{dropped_file}")
+
+        if self.on_drop:
+            self.on_drop(dropped_file)
+
+
+
 
 
 class TextEntry(ttk.Frame):
@@ -314,6 +333,13 @@ class Watermarker(GUI):
             self.add_watermark()
 
 
+def unique_path(directory, name_pattern):
+    counter = 0
+    while True:
+        counter += 1
+        path = directory / name_pattern.format(counter)
+        if not path.exists():
+            return path
 
 
 class App(Watermarker):
@@ -340,25 +366,32 @@ class App(Watermarker):
         self.main.output.path_entry.insert(tk.END, f"{self.output_dir}")
 
 
+
     def browse_saving_dir(self):
         dirname = tk.filedialog.askdirectory(initialdir=self.output_dir)
         self.output_dir = Path(dirname)
         self.main.output.path_entry.delete(0, tk.END)
         self.main.output.path_entry.insert(tk.END, dirname)
 
-    def unique_path(self, directory, name_pattern):
-        counter = 0
-        while True:
-            counter += 1
-            path = directory / name_pattern.format(counter)
-            if not path.exists():
-                return path
-
-
     def save_file(self):
         self.validate_and_preview()
         template = f"{self.input_path.stem}"+"{:03d}_watermarked.png"
-        self.output_image.save(self.unique_path(self.output_dir, template))
+        self.output_image.save(unique_path(self.output_dir, template))
+
+    def drop_inside_entry(self, event):
+        dropped_file = Path(event.data.strip().strip('{}'))
+        if dropped_file.is_file():
+            self.input_path = dropped_file
+            self.output_dir = dropped_file.parent
+
+            self.main.input.path_entry.delete(0, tk.END)
+            self.main.input.path_entry.insert(0, f"{dropped_file}")
+
+            self.main.output.path_entry.delete(0, tk.END)
+            self.main.output.path_entry.insert(0, f"{dropped_file.parent}")
+
+            self.validate_and_preview()
+
 
 if __name__ == '__main__':
     gui = App('Watermark Tool', (600,800))
