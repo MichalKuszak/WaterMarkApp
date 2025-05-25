@@ -26,7 +26,7 @@ class GUI(TkinterDnD.Tk):
         self.title(title)
 
         # Widgets
-        self.main = Main(self)
+        self.main = Main(self, app=self)
         self.main.darkmode_toggle.darkmode_spinbox.config(command=self.toggle_dark_mode)
 
 
@@ -38,8 +38,10 @@ class GUI(TkinterDnD.Tk):
 
 
 class Main(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__()
+    def __init__(self, parent, app):
+        super().__init__(parent)
+        self.app = app
+        self.parent = parent
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
@@ -68,7 +70,7 @@ class Main(ttk.Frame):
             text='Select image to overlay:', 
             font=('Helvetica', 16), 
             justify='left')
-        self.input = PathEntry(self.frame_2)
+        self.input = PathEntry(self.frame_2, on_drop=self.app.handle_drop)
         self.output_label = ttk.Label(self.frame_2,
                                       text='Select path to save the image:',
                                       font=('Helvetica', 16),
@@ -153,15 +155,16 @@ class DarkModeToggle(ttk.Frame):
 
 
 class PathEntry(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, on_drop=None):
         super().__init__(parent)
+        self.on_drop = on_drop
         self.entry_create_widgets()
         self.entry_layout_widgets()
 
     def entry_create_widgets(self):
         self.path_entry = ttk.Entry(self, font=16)
         self.path_entry.drop_target_register(DND_FILES)
-        self.path_entry.dnd_bind('<<Drop>>', lambda e: self.path_entry.insert(tk.END, e.data))
+        self.path_entry.dnd_bind('<<Drop>>', self.drop_inside_entry)
         self.browse_button = ttk.Button(self, text="Browse")
 
     def entry_layout_widgets(self):
@@ -378,19 +381,15 @@ class App(Watermarker):
         template = f"{self.input_path.stem}"+"{:03d}_watermarked.png"
         self.output_image.save(unique_path(self.output_dir, template))
 
-    def drop_inside_entry(self, event):
-        dropped_file = Path(event.data.strip().strip('{}'))
-        if dropped_file.is_file():
-            self.input_path = dropped_file
-            self.output_dir = dropped_file.parent
-
-            self.main.input.path_entry.delete(0, tk.END)
-            self.main.input.path_entry.insert(0, f"{dropped_file}")
+    def handle_drop(self, dropped_path: Path):
+        if dropped_path.is_file():
+            self.input_path = dropped_path
+            self.output_dir = dropped_path.parent
 
             self.main.output.path_entry.delete(0, tk.END)
-            self.main.output.path_entry.insert(0, f"{dropped_file.parent}")
+            self.main.output.path_entry.insert(0, f"{dropped_path.parent}")
 
-            self.validate_and_preview()
+            # self.validate_and_preview()
 
 
 if __name__ == '__main__':
